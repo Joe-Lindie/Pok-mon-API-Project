@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pokémon Search</title>
+  </head>
+  <body>
+    <main>
+      <h1>Pokémon Search</h1>
+
+      <form action="#">
+        <label for="name">Pokémon Name:</label>
+        <input id="name" name="name" type="text" />
+
+        <button id="submit" type="submit">Find</button>
+      </form>
+
+      <p id="pokeName"></p>
+      <p id="order"></p>
+      <div id="pokeImg"></div>
+    </main>
+
+    <script>
+      //Grabbed elements needed from DOM
+      const form = document.querySelector("form")
+      const pokémonName = document.querySelector("#name")
+      const submit = document.querySelector("#submit")
+      const pokemonName = document.querySelector("#pokeName")
+      const order = document.querySelector("#order")
+      const pokeImg = document.querySelector("#pokeName")
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault()
+
+        //User can enter name in any case letter
+        const name = pokémonName.value.toLowerCase()
+
+        function getPokémons(name) {
+          return fetch(`https://pokeapi.co/api/v2/pokemon/${name}`).then(
+            (response) => response.json()
+          )
+        }
+
+        //Pokémon Name
+        getPokémons(name).then(
+          (attribute) => console.log(attribute)
+          //(attribute) => (pokemonName.innerHTML = attribute.name)
+        )
+
+        //Pokémon Order
+        getPokémons(name).then(
+          (attribute) => (order.innerHTML = attribute.order)
+        )
+
+        //Pokémon Image
+        getPokémons(name).then((attribute) => {
+          const image = document.createElement("img")
+          image.src = attribute.sprites.front_shiny
+          image.alt = ""
+
+          pokeImg.append(image)
+        })
+
+        getPokémons(name).catch(
+          (error) => (pokemonName.innerHTML = "This pokemon does not exist")
+        )
+      })
+    </script>
+  </body>
+</html>
