@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
+    <script src="index.js"></script>
     <title>Pokémon Search</title>
   </head>
   <body>
@@ -28,49 +29,5 @@
         <div id="poke_img"></div>
       </section>
     </main>
-
-    <script>
-      //Grabbed elements needed from DOM
-      const form = document.querySelector("form")
-      const pokémonName = document.querySelector("#name")
-      const submit = document.querySelector("#submit")
-      const pokemonName = document.querySelector("#poke_name")
-
-      form.addEventListener("submit", (event) => {
-        event.preventDefault()
-
-        //USER CAN ENTER NAME IN ANY CASE LETTER
-        const name = pokémonName.value.toLowerCase()
-
-        //FETCH API AND CONVERT TO JSON
-        function getPokémons(name) {
-          return fetch(`https://pokeapi.co/api/v2/pokemon/${name}`).then(
-            (response) => response.json()
-          )
-        }
-
-        //POKÉMON NAME
-        getPokémons(name)
-          .then((attribute) => {
-            //POKÉMON NAME
-            const name = document.createElement("h2")
-            name.innerHTML = attribute.name
-
-            poke_name.append(name)
-
-            //POKÉMON IMAGE
-            const image = document.createElement("img")
-            image.src = attribute.sprites.front_shiny
-            image.alt = "Pokémon Character"
-
-            poke_img.append(image)
-          })
-
-          .catch(
-            (error) =>
-              (pokemonName.innerHTML = "This pokemon does not exist. Sorry!")
-          )
-      })
-    </script>
   </body>
 </html>
