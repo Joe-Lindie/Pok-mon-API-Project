@@ -4,22 +4,29 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
     <title>Pokémon Search</title>
   </head>
   <body>
     <main>
-      <h1>Pokémon Search</h1>
+      <h1>Pokémon</h1>
 
       <form action="#">
-        <label for="name">Pokémon Name:</label>
-        <input id="name" name="name" type="text" />
+        <label for="name">Search for your favourite Pokémon!</label> <br />
+        <input
+          id="name"
+          placeholder="Pokémon Name..."
+          name="name"
+          type="text"
+        />
 
         <button id="submit" type="submit">Find</button>
       </form>
 
-      <p id="pokeName"></p>
-      <p id="order"></p>
-      <div id="pokeImg"></div>
+      <section class="card_container">
+        <p id="poke_name"></p>
+        <div id="poke_img"></div>
+      </section>
     </main>
 
     <script>
@@ -27,45 +34,41 @@
       const form = document.querySelector("form")
       const pokémonName = document.querySelector("#name")
       const submit = document.querySelector("#submit")
-      const pokemonName = document.querySelector("#pokeName")
-      const order = document.querySelector("#order")
-      const pokeImg = document.querySelector("#pokeName")
+      const pokemonName = document.querySelector("#poke_name")
 
       form.addEventListener("submit", (event) => {
         event.preventDefault()
 
-        //User can enter name in any case letter
+        //USER CAN ENTER NAME IN ANY CASE LETTER
         const name = pokémonName.value.toLowerCase()
 
+        //FETCH API AND CONVERT TO JSON
         function getPokémons(name) {
           return fetch(`https://pokeapi.co/api/v2/pokemon/${name}`).then(
             (response) => response.json()
           )
         }
 
-        //Pokémon Name
+        //POKÉMON NAME
         getPokémons(name).then(
-          (attribute) => console.log(attribute)
-          //(attribute) => (pokemonName.innerHTML = attribute.name)
+          // (attribute) => console.log(attribute)
+          (attribute) => (pokemonName.innerHTML = attribute.name)
         )
 
-        //Pokémon Order
-        getPokémons(name).then(
-          (attribute) => (order.innerHTML = attribute.order)
-        )
+        //POKÉMON IMAGE
+        getPokémons(name)
+          .then((attribute) => {
+            const image = document.createElement("img")
+            image.src = attribute.sprites.front_shiny
+            image.alt = "Pokémon Character"
 
-        //Pokémon Image
-        getPokémons(name).then((attribute) => {
-          const image = document.createElement("img")
-          image.src = attribute.sprites.front_shiny
-          image.alt = ""
+            poke_img.append(image)
+          })
 
-          pokeImg.append(image)
-        })
-
-        getPokémons(name).catch(
-          (error) => (pokemonName.innerHTML = "This pokemon does not exist")
-        )
+          .catch(
+            (error) =>
+              (pokemonName.innerHTML = "This pokemon does not exist. Sorry!")
+          )
       })
     </script>
   </body>

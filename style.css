@@ -1,0 +1,26 @@
+body {
+    background-color: aliceblue;
+}
+
+
+form, 
+h1,
+.card_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+form input,
+h1 {
+    margin-bottom: 1rem;
+}
+
+.card_container {
+    margin-top: 5rem;
+}
+
+form button {
+    cursor: pointer;
+}
