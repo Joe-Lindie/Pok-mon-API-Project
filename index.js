@@ -1,8 +1,8 @@
 //Grabbed elements needed from DOM
-const form = $("form")
-const pokémonName = $("#name")
-const submit = $("#submit")
-const pokemonName = $("#poke_name")
+const form = $("form");
+const pokémonName = $("#name");
+const submit = $("#submit");
+const pokemonName = $(".card_list");
 
 /*
 o------------------o
@@ -11,7 +11,7 @@ o------------------o
 */
 
 function $(selector, element = document) {
-  return element.querySelector(selector)
+  return element.querySelector(selector);
 }
 
 function createElement({
@@ -24,124 +24,181 @@ function createElement({
   alt,
   id,
 }) {
-  const parentEl = parent || $(parentSelector)
-  const newElement = document.createElement(tag)
+  const parentEl = parent || $(parentSelector);
+  const newElement = document.createElement(tag);
 
-  if (text) newElement.innerText = text
-  if (className) newElement.classList.add(className)
-  if (id) newElement.id = id
-  if (parentEl) parentEl.append(newElement)
-  if (src) newElement.src = src
-  if (alt) newElement.alt = alt
+  if (text) newElement.innerText = text;
+  if (className) newElement.classList.add(className);
+  if (id) newElement.id = id;
+  if (parentEl) parentEl.append(newElement);
+  if (src) newElement.src = src;
+  if (alt) newElement.alt = alt;
 
-  return newElement
+  return newElement;
 }
 
 form.addEventListener("submit", (event) => {
-  event.preventDefault()
+  event.preventDefault();
 
   //USER CAN ENTER NAME IN ANY CASE LETTER
-  const name = pokémonName.value.toLowerCase()
+  const name = pokémonName.value.toLowerCase();
+
+  // NEW CARD CONTAINER
+  const cardContainer = createElement({
+    tag: "div",
+    className: "card__container",
+    parentSelector: ".card_list",
+  });
 
   //FETCH API AND CONVERT TO JSON
-  function getPokémons(name, id) {
-    return fetch(
-      `https://pokeapi.co/api/v2/${id ? "characteristics" : "pokemon"}/${
-        id || name
-      }`
-    ).then((response) => response.json())
+  function getPokemonData(name) {
+    return fetch(`https://pokeapi.co/api/v2/pokemon/${name}`).then((response) =>
+      response.json()
+    );
+  }
 
-    // const characteristics = fetch(
-    //   `https://pokeapi.co/api/v2/characteristic/%7Bid%7D/`
-    // ).then((response) => response.json())
-    // return { mainData, characteristics }
+  function getPokemonDescription(id) {
+    return fetch(`https://pokeapi.co/api/v2/characteristic/${id}/`).then(
+      (response) => response.json()
+    );
   }
 
   //POKÉMON NAME
-  getPokémons(name)
+  getPokemonData(name)
     .then((attribute) => {
-      console.log(attribute)
-      // //POKÉMON NAME
-      // const name = document.createElement("h2")
-      // name.innerHTML = attribute.name
-
-      // poke_name.append(name)
-
-      // //POKÉMON IMAGE
-      // const image = document.createElement("img")
-      // image.src = attribute.sprites.front_shiny
-      // image.alt = "Pokémon Character"
-
-      // poke_img.append(image)
-      const parentDiv = createElement({
+      const containerHpElement = createElement({
         tag: "div",
-        className: "card__container",
-        parentSelector: "body",
-      })
-      /* const cardChildren = {
-          pokemonName: 
-  
-}*/
-      createElement({
-        tag: "p",
-        className: "pokemon-name",
-        parent: parentDiv,
-        text: attribute.name,
-      })
+        className: "container-hp-element",
+        parent: cardContainer,
+      });
 
       createElement({
         tag: "p",
         className: "hp",
-        parent: parentDiv,
+        parent: containerHpElement,
         text: "hp " + attribute.stats[0].base_stat,
-      })
+      });
 
       createElement({
         tag: "p",
         className: "element-type",
-        parent: parentDiv,
+        parent: containerHpElement,
         text: attribute.types[0].type.name,
-      })
-
+      });
       createElement({
         tag: "p",
-        className: "abilities-type",
-        parent: parentDiv,
-        text: attribute.abilities[0].ability.name,
-      })
-
-      createElement({
-        tag: "p",
-        className: "weakness",
-        parent: parentDiv,
-        text: attribute.abilities[0].ability.name,
-      })
-
-      createElement({
-        tag: "p",
-        className: "description",
-        parent: parentDiv,
-        text: attribute.descriptions[0].description,
-      })
+        className: "pokemon-name",
+        parent: cardContainer,
+        text: attribute.name,
+      });
 
       createElement({
         tag: "img",
         className: "poke-image",
-        parent: parentDiv,
+        parent: cardContainer,
         alt: "Pokémon Character",
         src: attribute.sprites.front_shiny,
-      })
+      });
+
+      return attribute;
     })
+    .then((attribute) => getPokemonDescription(attribute.id))
+    //
+    .then((descriptionData) =>
+      createElement({
+        tag: "p",
+        className: "description",
+        parent: cardContainer,
+        text: descriptionData.descriptions[0].description,
+      })
+    );
 
-    .catch(
-      (error) => (pokemonName.innerHTML = "This pokemon does not exist. Sorry!")
-    )
-})
+  // .catch((error) => {
+  //   pokemonName.innerHTML = "This pokemon does not exist. Sorry!"
+  //   console.error(error)
+  // })
+});
 
-/* function createPokemonElements(pokemonObj) {
-  textSections: [{name: 'name'}, hp, type, 
-  img:,
-  
-  
+function createPokemonElements({ textElements, imgSrc, parent }) {
+  for (let section of textElements) {
+    createElement({
+      tag: "p",
+      parent: parent,
+      className: section.className,
+      text: section.text,
+    });
+  }
+
+  // PokeImg
+  createElement({
+    tag: "img",
+    className: "poke-image",
+    parent: parentDiv,
+    alt: "Pokémon Character",
+    src: imgSrc,
+  });
 }
-*/
+
+// //USER CAN ENTER NAME IN ANY CASE LETTER
+// const name = pokémonName.value.toLowerCase();
+
+// // NEW CARD CONTAINER
+// const cardContainer = createElement({
+//   tag: "div",
+//   className: "card__container",
+//   parentSelector: ".card_list",
+// });
+
+// //POKÉMON NAME
+// getPokemonData("pikachu")
+//   .then((attribute) => {
+//     const containerHpElement = createElement({
+//       tag: "div",
+//       className: "container-hp-element",
+//       parent: cardContainer,
+//     });
+
+//     createElement({
+//       tag: "p",
+//       className: "hp",
+//       parent: containerHpElement,
+//       text: "hp " + attribute.stats[0].base_stat,
+//     });
+
+//     createElement({
+//       tag: "p",
+//       className: "element-type",
+//       parent: containerHpElement,
+//       text: attribute.types[0].type.name,
+//     });
+//     createElement({
+//       tag: "p",
+//       className: "pokemon-name",
+//       parent: cardContainer,
+//       text: attribute.name,
+//     });
+
+//     createElement({
+//       tag: "img",
+//       className: "poke-image",
+//       parent: cardContainer,
+//       alt: "Pokémon Character",
+//       src: attribute.sprites.front_shiny,
+//     });
+
+//     return attribute;
+//   })
+//   .then((attribute) => getPokemonDescription(attribute.id))
+//   .then((descriptionData) =>
+//     createElement({
+//       tag: "p",
+//       className: "description",
+//       parent: cardContainer,
+//       text: descriptionData.descriptions[0].description,
+//     })
+//   )
+
+//   .catch((error) => {
+//     pokemonName.innerHTML = "This pokemon does not exist. Sorry!";
+//     console.error(error);
+//   });

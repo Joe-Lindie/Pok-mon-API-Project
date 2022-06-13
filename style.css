@@ -1,25 +1,56 @@
 body {
-    background-color: aliceblue;
+  background-color: aliceblue;
 }
 
-form, 
+form,
 h1,
-.card_container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+.card_list {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 form input,
 h1 {
-    margin-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+
+p {
+  margin: 0;
 }
 
 .card_container {
-    margin-top: 5rem;
+  margin-top: 5rem;
 }
 
 form button {
-    cursor: pointer;
+  cursor: pointer;
+  margin-bottom: 2rem;
+}
+
+.card__container {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  margin-bottom: 1rem;
+  min-width: 10rem;
+  min-height: 15rem;
+  border-radius: 10px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+  text-transform: capitalize;
+  background-color: #f9ed8e;
+}
+
+.container-hp-element {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.pokemon-name,
+.description {
+  text-align: center;
+  font-weight: bold;
+  margin-top: 1rem;
 }
