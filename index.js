@@ -14,16 +14,17 @@ function $(selector, element = document) {
   return element.querySelector(selector);
 }
 
-function createElement({
-  tag,
-  className,
-  parent,
-  parentSelector,
-  text = "",
-  src,
-  alt,
-  id,
-}) {
+function createElement(elementObj) {
+  const {
+    tag,
+    className,
+    parent,
+    parentSelector,
+    text = "",
+    src,
+    alt,
+    id,
+  } = elementObj;
   const parentEl = parent || $(parentSelector);
   const newElement = document.createElement(tag);
 
@@ -111,12 +112,12 @@ form.addEventListener("submit", (event) => {
         parent: cardContainer,
         text: descriptionData.descriptions[0].description,
       })
-    );
+    )
 
-  // .catch((error) => {
-  //   pokemonName.innerHTML = "This pokemon does not exist. Sorry!"
-  //   console.error(error)
-  // })
+    .catch((error) => {
+      pokemonName.innerHTML = "This pokemon does not exist. Sorry!";
+      console.error(error);
+    });
 });
 
 function createPokemonElements({ textElements, imgSrc, parent }) {
