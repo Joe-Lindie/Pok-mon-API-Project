@@ -3,8 +3,7 @@ body {
 }
 
 form,
-h1,
-.card_list {
+h1 {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -20,13 +19,19 @@ p {
   margin: 0;
 }
 
-.card_container {
-  margin-top: 5rem;
-}
-
 form button {
   cursor: pointer;
   margin-bottom: 2rem;
+}
+
+.card_list {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 3rem;
+  font-family: Arial, Helvetica, sans-serif;
+  letter-spacing: 0.05rem;
 }
 
 .card__container {
@@ -34,7 +39,7 @@ form button {
   flex-direction: column;
   padding: 10px;
   margin-bottom: 1rem;
-  min-width: 10rem;
+  min-width: clamp(10rem, 80%, 15rem);
   min-height: 15rem;
   border-radius: 10px;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
