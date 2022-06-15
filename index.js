@@ -40,6 +40,23 @@ function createElement(elementObj) {
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
+  const typeColourMap = {
+    psychic: "#AB5F79",
+    fire: "#D2765E",
+    water: "#70BFE3",
+    bug: "#A1CC86",
+    normal: "#C9BEB5",
+    poison: "#9A67AA",
+    electric: "#F2D330",
+    ground: "#C99477",
+    fairy: "#F0B6BC",
+    grass: "#9CC061",
+    fighting: "#D2AE86",
+    rock: "#9A8B6B",
+    ghost: "#81345B",
+    dragon: "#CEC7BD",
+    ice: "#4D98B7",
+  };
 
   //USER CAN ENTER NAME IN ANY CASE LETTER
   const name = pokémonName.value.toLowerCase();
@@ -51,22 +68,15 @@ form.addEventListener("submit", (event) => {
     parentSelector: ".card_list",
   });
 
-  //FETCH API AND CONVERT TO JSON
-  function getPokemonData(name) {
-    return fetch(`https://pokeapi.co/api/v2/pokemon/${name}`).then((response) =>
-      response.json()
-    );
-  }
-
-  function getPokemonDescription(id) {
-    return fetch(`https://pokeapi.co/api/v2/characteristic/${id}/`).then(
-      (response) => response.json()
-    );
-  }
-
   //POKÉMON NAME
   getPokemonData(name)
     .then((attribute) => {
+      const hp = "hp " + attribute.stats[0].base_stat;
+      const type = attribute.types[0].type.name;
+      const sprite = attribute.sprites.front_shiny;
+
+      cardContainer.style.backgroundColor = typeColourMap[type];
+
       const containerHpElement = createElement({
         tag: "div",
         className: "container-hp-element",
@@ -77,20 +87,21 @@ form.addEventListener("submit", (event) => {
         tag: "p",
         className: "hp",
         parent: containerHpElement,
-        text: "hp " + attribute.stats[0].base_stat,
+        text: hp,
       });
 
       createElement({
         tag: "p",
         className: "element-type",
         parent: containerHpElement,
-        text: attribute.types[0].type.name,
+        text: type,
       });
+
       createElement({
         tag: "p",
         className: "pokemon-name",
         parent: cardContainer,
-        text: attribute.name,
+        text: name,
       });
 
       createElement({
@@ -98,19 +109,18 @@ form.addEventListener("submit", (event) => {
         className: "poke-image",
         parent: cardContainer,
         alt: "Pokémon Character",
-        src: attribute.sprites.front_shiny,
+        src: sprite,
       });
 
       return attribute;
     })
-    .then((attribute) => getPokemonDescription(attribute.id))
-    //
+    .then((attribute) => getPokemonDescription(attribute.species.url))
     .then((descriptionData) =>
       createElement({
         tag: "p",
         className: "description",
         parent: cardContainer,
-        text: descriptionData.descriptions[0].description,
+        text: descriptionData.genera[0].genus,
       })
     )
 
@@ -140,66 +150,13 @@ function createPokemonElements({ textElements, imgSrc, parent }) {
   });
 }
 
-// //USER CAN ENTER NAME IN ANY CASE LETTER
-// const name = pokémonName.value.toLowerCase();
+//FETCH API AND CONVERT TO JSON
+function getPokemonData(name) {
+  return fetch(`https://pokeapi.co/api/v2/pokemon/${name}`).then((response) =>
+    response.json()
+  );
+}
 
-// // NEW CARD CONTAINER
-// const cardContainer = createElement({
-//   tag: "div",
-//   className: "card__container",
-//   parentSelector: ".card_list",
-// });
-
-// //POKÉMON NAME
-// getPokemonData("pikachu")
-//   .then((attribute) => {
-//     const containerHpElement = createElement({
-//       tag: "div",
-//       className: "container-hp-element",
-//       parent: cardContainer,
-//     });
-
-//     createElement({
-//       tag: "p",
-//       className: "hp",
-//       parent: containerHpElement,
-//       text: "hp " + attribute.stats[0].base_stat,
-//     });
-
-//     createElement({
-//       tag: "p",
-//       className: "element-type",
-//       parent: containerHpElement,
-//       text: attribute.types[0].type.name,
-//     });
-//     createElement({
-//       tag: "p",
-//       className: "pokemon-name",
-//       parent: cardContainer,
-//       text: attribute.name,
-//     });
-
-//     createElement({
-//       tag: "img",
-//       className: "poke-image",
-//       parent: cardContainer,
-//       alt: "Pokémon Character",
-//       src: attribute.sprites.front_shiny,
-//     });
-
-//     return attribute;
-//   })
-//   .then((attribute) => getPokemonDescription(attribute.id))
-//   .then((descriptionData) =>
-//     createElement({
-//       tag: "p",
-//       className: "description",
-//       parent: cardContainer,
-//       text: descriptionData.descriptions[0].description,
-//     })
-//   )
-
-//   .catch((error) => {
-//     pokemonName.innerHTML = "This pokemon does not exist. Sorry!";
-//     console.error(error);
-//   });
+function getPokemonDescription(url) {
+  return fetch(url).then((response) => response.json());
+}
